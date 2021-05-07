@@ -7,12 +7,13 @@ authors = ["nakatuba <nakatuba@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.9"
 torch = "^1.8.1"
-scikit-learn = "^0.24.1"
-pandas = "^1.2.4"
 torchtext = "^0.9.1"
+pandas = "^1.2.4"
+scikit-learn = "^0.24.1"
 mecab-python3 = "^1.0.3"
 
 [tool.poetry.dev-dependencies]
+flake8 = "^3.9.1"
 black = "^20.8b1"
 isort = "^5.8.0"
 jupyterlab = "^3.0.14"
