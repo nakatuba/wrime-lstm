@@ -32,9 +32,8 @@ def train(model, iterator, optimizer, criterion):
         ]
 
         loss = 0
-        for i in range(8):
-            loss += criterion(output[i], labels[i])
-        loss /= 8
+        for i, label in enumerate(labels):
+            loss += criterion(output[i], label)
 
         optimizer.zero_grad()
         loss.backward()
@@ -64,9 +63,8 @@ def evaluate(model, iterator, criterion):
             ]
 
             loss = 0
-            for i in range(8):
-                loss += criterion(output[i], labels[i])
-            loss /= 8
+            for i, label in enumerate(labels):
+                loss += criterion(output[i], label)
 
             epoch_loss += loss.item()
 
