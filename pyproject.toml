@@ -6,15 +6,15 @@ authors = ["nakatuba <nakatuba@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-torch = "^1.8.1"
-torchtext = "^0.9.1"
+matplotlib = "^3.4.2"
+mecab-python3 = "^1.0.3"
 pandas = "^1.2.4"
 scikit-learn = "^0.24.1"
-mecab-python3 = "^1.0.3"
+torchtext = "^0.9.1"
 
 [tool.poetry.dev-dependencies]
-flake8 = "^3.9.1"
 black = "^20.8b1"
+flake8 = "^3.9.1"
 isort = "^5.8.0"
 jupyterlab = "^3.0.14"
 jupyterlab-code-formatter = "^1.4.10"
