@@ -2,7 +2,7 @@
 name = "sentiment-analysis"
 version = "0.1.0"
 description = ""
-authors = ["nakatuba <nakatuba@gmail.com>"]
+authors = ["nakatuba <nakatuba0626@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
