@@ -46,12 +46,15 @@ def main():
     optimizer = optim.Adam(model.parameters(), lr=2e-5)
 
     num_epochs = 10
-    for epoch in range(num_epochs):
-        train_loss = train(model, train_dataloader, criterion, optimizer)
-        val_loss = evaluate(model, valid_dataloader, criterion)
-        print(f"Epoch {epoch + 1:>2}/{num_epochs}", end=" ")
-        print(f"train_loss {train_loss:.4f}", end=" ")
-        print(f"val_loss {val_loss:.4f}")
+    for epoch in range(1, num_epochs + 1):
+        train_loss, train_acc = train(model, train_dataloader, criterion, optimizer)
+        print(
+            f"Epoch {epoch}/{num_epochs} | train | Loss: {train_loss:.4f} Acc: {train_acc:.4f}"
+        )
+        valid_loss, valid_acc = evaluate(model, valid_dataloader, criterion)
+        print(
+            f"Epoch {epoch}/{num_epochs} | valid | Loss: {valid_loss:.4f} Acc: {valid_acc:.4f}"
+        )
 
 
 def tokenizer(text):
@@ -63,6 +66,7 @@ def tokenizer(text):
 def train(model, dataloader, criterion, optimizer):
     model.train()
     epoch_loss = 0
+    epoch_acc = 0
 
     for text, label in dataloader:
         output = model(text)
@@ -73,14 +77,19 @@ def train(model, dataloader, criterion, optimizer):
         loss.backward()
         optimizer.step()
 
-        epoch_loss += loss.item()
+        pred = output.argmax(dim=1)
+        acc = (pred == label).sum() / len(pred)
 
-    return epoch_loss / len(dataloader)
+        epoch_loss += loss.item()
+        epoch_acc += acc.item()
+
+    return epoch_loss / len(dataloader), epoch_acc / len(dataloader)
 
 
 def evaluate(model, dataloader, criterion):
     model.eval()
     epoch_loss = 0
+    epoch_acc = 0
 
     with torch.no_grad():
         for text, label in dataloader:
@@ -88,9 +97,13 @@ def evaluate(model, dataloader, criterion):
 
             loss = criterion(output, label)
 
-            epoch_loss += loss.item()
+            pred = output.argmax(dim=1)
+            acc = (pred == label).sum() / len(pred)
 
-    return epoch_loss / len(dataloader)
+            epoch_loss += loss.item()
+            epoch_acc += acc.item()
+
+    return epoch_loss / len(dataloader), epoch_acc / len(dataloader)
 
 
 if __name__ == "__main__":
