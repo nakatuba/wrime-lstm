@@ -41,7 +41,7 @@ def main():
         test_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_batch
     )
 
-    model = LSTM(len(vocab), 32, 32, 3).to(device)
+    model = LSTM(len(vocab), 32, 32, 4).to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=2e-5)
 
