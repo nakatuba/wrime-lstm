@@ -12,6 +12,7 @@ pandas = "^1.2.4"
 scikit-learn = "^0.24.2"
 torch = "^1.8.1"
 torchtext = "^0.10.0"
+wandb = "^0.10.33"
 
 [tool.poetry.dev-dependencies]
 black = "^21.5b2"

@@ -2,6 +2,7 @@ import MeCab
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import wandb
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader
 from torchtext.vocab import build_vocab_from_iterator
@@ -11,6 +12,7 @@ from utils.dataset import DifferenceDataset
 
 
 def main():
+    wandb.init(project="sentiment-analysis")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     train_dataset = DifferenceDataset("./data/train.tsv")
@@ -54,6 +56,15 @@ def main():
         valid_loss, valid_acc = evaluate(model, valid_dataloader, criterion)
         print(
             f"Epoch {epoch}/{num_epochs} | valid | Loss: {valid_loss:.4f} Acc: {valid_acc:.4f}"
+        )
+        wandb.log(
+            {
+                "epoch": epoch,
+                "train_loss": train_loss,
+                "train_acc": train_acc,
+                "valid_loss": valid_loss,
+                "valid_acc": valid_acc,
+            }
         )
 
 
