@@ -1,12 +1,13 @@
 import MeCab
+import pandas as pd
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import wandb
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader
 from torchtext.vocab import build_vocab_from_iterator
 
+import wandb
 from model import LSTM
 from utils.dataset import DifferenceDataset
 
@@ -37,10 +38,10 @@ def main():
         train_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_batch
     )
     valid_dataloader = DataLoader(
-        valid_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_batch
+        valid_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_batch
     )
     test_dataloader = DataLoader(
-        test_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_batch
+        test_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_batch
     )
 
     model = LSTM(len(vocab), 32, 32, 4).to(device)
@@ -66,6 +67,24 @@ def main():
                 "valid_acc": valid_acc,
             }
         )
+
+    model.eval()
+    preds = []
+    labels = []
+
+    with torch.no_grad():
+        for text, label in test_dataloader:
+            output = model(text)
+            preds += output.argmax(dim=1).tolist()
+            labels += label.tolist()
+
+    test_acc = sum(pred == label for pred, label in zip(preds, labels)) / len(preds)
+    print("test accuracy", test_acc)
+
+    df = pd.DataFrame(
+        {"Sentence": test_dataset.texts, "Predicted": preds, "Label": labels}
+    )
+    df.to_csv("./data/result.tsv", sep="\t")
 
 
 def tokenizer(text):
