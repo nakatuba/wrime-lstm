@@ -84,7 +84,7 @@ def main():
     df = pd.DataFrame(
         {"Sentence": test_dataset.texts, "Predicted": preds, "Label": labels}
     )
-    df.to_csv("./data/result.tsv", sep="\t")
+    df.to_csv("./data/result.tsv", sep="\t", index=False)
 
 
 def tokenizer(text):
