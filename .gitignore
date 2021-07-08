@@ -1,5 +1,6 @@
 .ipynb_checkpoints/
 .virtual_documents/
 __pycache__/
+data/result.tsv
 wandb/
 .python-version
