@@ -83,7 +83,7 @@ def main():
     print(classification_report(labels, preds, target_names=target_names))
 
     df = pd.DataFrame(
-        {"Sentence": test_dataset.texts, "Predicted": preds, "Label": labels}
+        {"Sentence": test_dataset.texts, "Predicted": preds, "True": labels}
     )
     df.to_csv("./data/result.tsv", sep="\t", index=False)
 
