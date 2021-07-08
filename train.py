@@ -3,6 +3,7 @@ import pandas as pd
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from sklearn.metrics import classification_report
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader
 from torchtext.vocab import build_vocab_from_iterator
@@ -69,17 +70,17 @@ def main():
         )
 
     model.eval()
-    preds = []
     labels = []
+    preds = []
 
     with torch.no_grad():
         for text, label in test_dataloader:
             output = model(text)
-            preds += output.argmax(dim=1).tolist()
             labels += label.tolist()
+            preds += output.argmax(dim=1).tolist()
 
-    test_acc = sum(pred == label for pred, label in zip(preds, labels)) / len(preds)
-    print("test accuracy", test_acc)
+    target_names = ["class 0", "class 1", "class 2", "class 3"]
+    print(classification_report(labels, preds, target_names=target_names))
 
     df = pd.DataFrame(
         {"Sentence": test_dataset.texts, "Predicted": preds, "Label": labels}
