@@ -52,13 +52,10 @@ def main():
     num_epochs = 10
     for epoch in range(1, num_epochs + 1):
         train_loss, train_acc = train(model, train_dataloader, criterion, optimizer)
-        print(
-            f"Epoch {epoch}/{num_epochs} | train | Loss: {train_loss:.4f} Acc: {train_acc:.4f}"
-        )
         valid_loss, valid_acc = evaluate(model, valid_dataloader, criterion)
-        print(
-            f"Epoch {epoch}/{num_epochs} | valid | Loss: {valid_loss:.4f} Acc: {valid_acc:.4f}"
-        )
+        print(f"Epoch {epoch}/{num_epochs}", end=" ")
+        print(f"| train | Loss: {train_loss:.4f} Acc: {train_acc:.4f}", end=" ")
+        print(f"| valid | Loss: {valid_loss:.4f} Acc: {valid_acc:.4f}")
         wandb.log(
             {
                 "epoch": epoch,
