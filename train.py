@@ -10,7 +10,7 @@ from torchtext.vocab import build_vocab_from_iterator
 
 import wandb
 from model import LSTM
-from utils.dataset import DifferenceDataset
+from utils.dataset import TabularDataset
 from utils.sampler import BalancedBatchSampler
 
 
@@ -18,9 +18,9 @@ def main():
     wandb.init(project="sentiment-analysis")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    train_dataset = DifferenceDataset("./data/train.tsv")
-    # valid_dataset = DifferenceDataset("./data/valid.tsv")
-    test_dataset = DifferenceDataset("./data/test.tsv")
+    train_dataset = TabularDataset("./data/train.tsv")
+    # valid_dataset = TabularDataset("./data/valid.tsv")
+    test_dataset = TabularDataset("./data/test.tsv")
 
     vocab = build_vocab_from_iterator(
         [tokenizer(text) for text in train_dataset.texts],

@@ -2,7 +2,7 @@ import pandas as pd
 from torch.utils.data import Dataset
 
 
-class DifferenceDataset(Dataset):
+class TabularDataset(Dataset):
     def __init__(self, path):
         df = pd.read_csv(path, sep="\t")
         self.texts = df["Sentence"].values
