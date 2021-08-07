@@ -5,13 +5,12 @@ import torch.nn as nn
 import torch.optim as optim
 from sklearn.metrics import classification_report
 from torch.nn.utils.rnn import pad_sequence
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, WeightedRandomSampler
 from torchtext.vocab import build_vocab_from_iterator
 
 import wandb
 from model import LSTM
 from utils.dataset import TabularDataset
-from utils.sampler import BalancedBatchSampler
 
 
 def main():
@@ -36,12 +35,15 @@ def main():
         label_list = torch.tensor(label_list)
         return text_list.to(device), label_list.to(device)
 
-    batch_size = 32
+    batch_size = 64
 
-    batch_sampler = BalancedBatchSampler(train_dataset, batch_size=batch_size)
+    weights = [
+        1 / (train_dataset.labels == label).sum() for label in train_dataset.labels
+    ]
+    sampler = WeightedRandomSampler(weights=weights, num_samples=len(weights))
 
     train_dataloader = DataLoader(
-        train_dataset, batch_sampler=batch_sampler, collate_fn=collate_batch
+        train_dataset, batch_size=batch_size, sampler=sampler, collate_fn=collate_batch
     )
     # valid_dataloader = DataLoader(
     #     valid_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_batch
@@ -50,7 +52,7 @@ def main():
         test_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_batch
     )
 
-    model = LSTM(len(vocab), 32, 32, 4).to(device)
+    model = LSTM(len(vocab), 256, 256, 4).to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=2e-3)
 
