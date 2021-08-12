@@ -51,9 +51,9 @@ def main():
     optimizer = optim.Adam(model.parameters(), lr=2e-3)
 
     num_epochs = 10
-    for epoch in range(1, num_epochs + 1):
+    for epoch in range(num_epochs):
         train_loss, train_acc = train(model, train_dataloader, criterion, optimizer)
-        print(f"Epoch {epoch:>2}/{num_epochs}", end=" ")
+        print(f"Epoch {epoch + 1}/{num_epochs}", end=" ")
         print(f"| train | Loss: {train_loss:.4f} Accuracy: {train_acc:.4f}")
 
     model.eval()
@@ -66,8 +66,7 @@ def main():
             y_true += label.tolist()
             y_pred += output.argmax(dim=1).tolist()
 
-    target_names = ["class 0", "class 1", "class 2", "class 3"]
-    print(classification_report(y_true, y_pred, target_names=target_names))
+    print(classification_report(y_true, y_pred))
 
     df = pd.read_csv("./data/test.tsv", sep="\t")
     df["Predicted"] = y_pred
