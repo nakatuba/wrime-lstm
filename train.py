@@ -18,7 +18,6 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     train_dataset = TabularDataset("./data/train.tsv")
-    # valid_dataset = TabularDataset("./data/valid.tsv")
     test_dataset = TabularDataset("./data/test.tsv")
 
     vocab = build_vocab_from_iterator(
@@ -45,9 +44,6 @@ def main():
     train_dataloader = DataLoader(
         train_dataset, batch_size=batch_size, sampler=sampler, collate_fn=collate_batch
     )
-    # valid_dataloader = DataLoader(
-    #     valid_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_batch
-    # )
     test_dataloader = DataLoader(
         test_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_batch
     )
@@ -59,17 +55,13 @@ def main():
     num_epochs = 10
     for epoch in range(1, num_epochs + 1):
         train_loss, train_acc = train(model, train_dataloader, criterion, optimizer)
-        # valid_loss, valid_acc = evaluate(model, valid_dataloader, criterion)
         print(f"Epoch {epoch:>2}/{num_epochs}", end=" ")
         print(f"| train | Loss: {train_loss:.4f} Accuracy: {train_acc:.4f}")
-        # print(f"| valid | Loss: {valid_loss:.4f} Accuracy: {valid_acc:.4f}")
         wandb.log(
             {
                 "epoch": epoch,
                 "train_loss": train_loss,
                 "train_acc": train_acc,
-                # "valid_loss": valid_loss,
-                # "valid_acc": valid_acc,
             }
         )
 
@@ -116,26 +108,6 @@ def train(model, dataloader, criterion, optimizer):
 
         epoch_loss += loss.item()
         epoch_acc += acc.item()
-
-    return epoch_loss / len(dataloader), epoch_acc / len(dataloader)
-
-
-def evaluate(model, dataloader, criterion):
-    model.eval()
-    epoch_loss = 0
-    epoch_acc = 0
-
-    with torch.no_grad():
-        for text, label in dataloader:
-            output = model(text)
-
-            loss = criterion(output, label)
-
-            pred = output.argmax(dim=1)
-            acc = (pred == label).sum() / len(pred)
-
-            epoch_loss += loss.item()
-            epoch_acc += acc.item()
 
     return epoch_loss / len(dataloader), epoch_acc / len(dataloader)
 
