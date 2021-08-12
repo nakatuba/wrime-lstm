@@ -8,13 +8,11 @@ from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader, WeightedRandomSampler
 from torchtext.vocab import build_vocab_from_iterator
 
-import wandb
 from model import LSTM
 from utils.dataset import TabularDataset
 
 
 def main():
-    wandb.init(project="sentiment-analysis")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     train_dataset = TabularDataset("./data/train.tsv")
@@ -57,13 +55,6 @@ def main():
         train_loss, train_acc = train(model, train_dataloader, criterion, optimizer)
         print(f"Epoch {epoch:>2}/{num_epochs}", end=" ")
         print(f"| train | Loss: {train_loss:.4f} Accuracy: {train_acc:.4f}")
-        wandb.log(
-            {
-                "epoch": epoch,
-                "train_loss": train_loss,
-                "train_acc": train_acc,
-            }
-        )
 
     model.eval()
     y_true = []
