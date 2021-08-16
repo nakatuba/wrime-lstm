@@ -4,7 +4,7 @@ import torch.optim as optim
 from sklearn.metrics import classification_report
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader, WeightedRandomSampler
-from torchtext.vocab import build_vocab_from_iterator
+from torchtext.vocab import Vectors, build_vocab_from_iterator
 
 from model import LSTM
 from utils.dataset import TabularDataset
@@ -47,11 +47,14 @@ def main():
         test_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_batch
     )
 
-    model = LSTM(len(vocab), 256, 256, 4).to(device)
+    japanese_word2vec_vectors = Vectors(name="./data/japanese_word2vec_vectors.vec")
+    vectors = japanese_word2vec_vectors.get_vecs_by_tokens(vocab.get_itos())
+
+    model = LSTM(vectors, 4).to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=2e-3)
 
-    num_epochs = 10
+    num_epochs = 20
     for epoch in range(num_epochs):
         train_loss, train_acc = train(model, train_dataloader, criterion, optimizer)
         print(f"Epoch {epoch + 1}/{num_epochs}", end=" ")
