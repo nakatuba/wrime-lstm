@@ -1,4 +1,3 @@
-import MeCab
 import pandas as pd
 import torch
 import torch.nn as nn
@@ -10,6 +9,7 @@ from torchtext.vocab import build_vocab_from_iterator
 
 from model import LSTM
 from utils.dataset import TabularDataset
+from utils.tokenizer import MeCabTokenizer
 
 
 def main():
@@ -18,15 +18,17 @@ def main():
     train_dataset = TabularDataset("./data/train.tsv")
     test_dataset = TabularDataset("./data/test.tsv")
 
+    tokenizer = MeCabTokenizer()
+
     vocab = build_vocab_from_iterator(
-        [tokenizer(text) for text in train_dataset.texts],
+        [tokenizer.tokenize(text) for text in train_dataset.texts],
         min_freq=10,
         specials=["<unk>", "<pad>"],
     )
     vocab.set_default_index(vocab["<unk>"])
 
     def collate_batch(batch):
-        text_list = [torch.tensor(vocab(tokenizer(text))) for text, _ in batch]
+        text_list = [torch.tensor(vocab(tokenizer.tokenize(text))) for text, _ in batch]
         label_list = [label for _, label in batch]
         text_list = pad_sequence(text_list, padding_value=vocab["<pad>"])
         label_list = torch.tensor(label_list)
@@ -71,12 +73,6 @@ def main():
     df = pd.read_csv("./data/test.tsv", sep="\t")
     df["Predicted"] = y_pred
     df.to_csv("./data/result.tsv", sep="\t", index=False)
-
-
-def tokenizer(text):
-    tagger = MeCab.Tagger("-Owakati")
-    text = tagger.parse(text)
-    return text.split()
 
 
 def train(model, dataloader, criterion, optimizer):
