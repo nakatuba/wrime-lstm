@@ -1,4 +1,3 @@
-import pandas as pd
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -69,10 +68,6 @@ def main():
             y_pred += output.argmax(dim=1).tolist()
 
     print(classification_report(y_true, y_pred))
-
-    df = pd.read_csv("./data/test.tsv", sep="\t")
-    df["Predicted"] = y_pred
-    df.to_csv("./data/result.tsv", sep="\t", index=False)
 
 
 def train(model, dataloader, criterion, optimizer):
