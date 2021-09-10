@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 
 
@@ -11,7 +12,8 @@ class LSTM(nn.Module):
     def forward(self, text):
         output = self.embedding(text)
         output, (hn, cn) = self.lstm(output)
-        output = self.linear(output[-1])
+        output = torch.cat([hn[-2], hn[-1]], dim=1)
+        output = self.linear(output)
         return output
 
 
