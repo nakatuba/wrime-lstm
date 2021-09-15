@@ -18,11 +18,13 @@ class LSTM(nn.Module):
 
 
 class MultiTaskLSTM(nn.Module):
-    def __init__(self, input_dim, embedding_dim, hidden_dim, output_dim, num_tasks):
+    def __init__(self, vectors, n_classes, n_tasks):
         super().__init__()
-        self.embedding = nn.Embedding(input_dim, embedding_dim)
-        self.lstm = nn.LSTM(embedding_dim, hidden_dim)
-        self.linears = nn.ModuleList([nn.Linear(hidden_dim, output_dim)] * num_tasks)
+        self.embedding = nn.Embedding.from_pretrained(vectors)
+        self.lstm = nn.LSTM(200, 64, num_layers=2, bidirectional=True)
+        self.linears = nn.ModuleList(
+            [nn.Linear(64 * 2, n_classes) for _ in range(n_tasks)]
+        )
 
     def forward(self, text):
         output = self.embedding(text)
