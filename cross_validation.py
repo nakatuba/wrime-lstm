@@ -3,8 +3,7 @@ import random
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from sklearn.metrics import (classification_report,
-                             precision_recall_fscore_support)
+from sklearn.metrics import classification_report
 from sklearn.model_selection import StratifiedKFold
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader, Subset, WeightedRandomSampler
@@ -23,9 +22,8 @@ def main():
     tokenizer = MeCabTokenizer()
 
     skf = StratifiedKFold(n_splits=5)
-    precisions = []
-    recalls = []
-    fscores = []
+    y_true_all = []
+    y_pred_all = []
 
     for fold, (train_index, test_index) in enumerate(
         skf.split(dataset.texts, dataset.labels)
@@ -103,15 +101,11 @@ def main():
                 y_pred += output.argmax(dim=1).tolist()
 
         print(classification_report(y_true, y_pred))
-        precision, recall, fscore, _ = precision_recall_fscore_support(y_true, y_pred)
-        precisions.append(precision)
-        recalls.append(recall)
-        fscores.append(fscore)
+        y_true_all += y_true
+        y_pred_all += y_pred
 
     print("-" * 50)
-    print("precision", sum(precisions) / len(precisions))
-    print("recall", sum(recalls) / len(recalls))
-    print("fscore", sum(fscores) / len(fscores))
+    print(classification_report(y_true_all, y_pred_all))
 
 
 def train(model, dataloader, criterion, optimizer):
