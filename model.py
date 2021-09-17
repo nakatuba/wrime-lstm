@@ -29,5 +29,6 @@ class MultiTaskLSTM(nn.Module):
     def forward(self, text):
         output = self.embedding(text)
         output, (hn, cn) = self.lstm(output)
-        output = [linear(output[-1]) for linear in self.linears]
+        output = torch.cat([hn[-2], hn[-1]], dim=1)
+        output = [linear(output) for linear in self.linears]
         return output
