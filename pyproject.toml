@@ -6,6 +6,7 @@ authors = ["nakatuba <nakatuba0626@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+gensim = "^4.0.1"
 matplotlib = "^3.4.2"
 mecab-python3 = "^1.0.3"
 pandas = "^1.2.4"

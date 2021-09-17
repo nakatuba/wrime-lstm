@@ -2,7 +2,5 @@
 .vector_cache/
 .virtual_documents/
 __pycache__/
-data/*
 wandb/
 .python-version
-!.gitkeep

@@ -10,8 +10,14 @@ else
   # Mac (BSD)
   sed -i "" -e "1s/Saddness/Sadness/g" wrime.tsv
 fi
-echo
+echo "Done\n"
+
+echo "Make labeled data"
+python make_data.py
+echo "Done\n"
 
 echo "Download word2vec"
 curl -O http://www.cl.ecei.tohoku.ac.jp/~m-suzuki/jawiki_vector/data/20170201.tar.bz2
 tar -xvf 20170201.tar.bz2
+python load_word2vec.py
+echo "Done"
