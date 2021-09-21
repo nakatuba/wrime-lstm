@@ -18,5 +18,5 @@ python make_data.py
 # Download word2vec
 curl -O http://www.cl.ecei.tohoku.ac.jp/~m-suzuki/jawiki_vector/data/20170201.tar.bz2
 echo
-tar -xvf 20170201.tar.bz2
+tar xvf 20170201.tar.bz2
 python load_word2vec.py
